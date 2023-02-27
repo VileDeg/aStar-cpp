@@ -5,6 +5,7 @@
 #include <fstream>
 #include <array>
 #include <sstream>
+#include <cmath>
 
 struct Vec2 {
     std::size_t x, y;
@@ -12,6 +13,10 @@ struct Vec2 {
     Vec2() = default;
     Vec2(const Vec2& v) : x(v.x), y(v.y) {}
     Vec2(size_t xv, size_t yv) : x(xv), y(yv) {}
+
+    float distance(const Vec2& v) {
+        return std::sqrt(std::pow(x - v.x, 2) + std::pow(y - v.y, 2));
+    }
 
     void fromStr(const std::string& str) {
         std::string s1, s2;
@@ -22,30 +27,22 @@ struct Vec2 {
         x = std::stoul(s1);
         y = std::stoul(s2);
     }
-};
 
-//class UsageException : public std::exception {
-//private:
-//    std::string _msg;
-//    const char* _usage = "Usage: ./astar <input_file.csv> <R,C> <Y,X> <Y,X>\n"
-//    "\tFile to read the grid from, grid dimensions, start point and end point\n"
-//    "\tWhere R - number of rows(Y), C - number of columns(X).";
-//
-//public:
-//    UsageException(const std::string& msg) : _msg(msg) {}
-//
-//    const char * what() const throw () {
-//        std::string str = _usage;
-//        if (!_msg.empty()) {
-//            str = "Error: " + _msg + "\n" + str;
-//        }
-//        return str.data();
-//    }
-//};
+    bool operator==(const Vec2& v) {
+        return x == v.x && y == v.y;
+    }
+
+    //Coords printed in reverse order!!!
+    friend std::ostream& operator<< (std::ostream& os, const Vec2& v) {
+        os << v.y << ", " << v.x;
+        return os;
+    }
+};
 
 struct Node {
     bool walkable;
     std::size_t val;
+    Vec2 pos;
     float g, h, f;
     Node* parent;
     std::vector<Node*> nbs;
@@ -53,14 +50,23 @@ struct Node {
     void fromStr(const std::string& str) {
         if (str != "Z") {
             val = std::stoul(str);
-            walkable = false;
-        } else {
             walkable = true;
+        } else {
+            walkable = false;
         }
     }
 
-    void print() {
-        std::cout << "Node: " << val << " walkable: " << walkable << std::endl;
+    friend std::ostream& operator<< (std::ostream& os, const Node& n) {
+
+        os << "[" << n.pos << "], " << n.f << ", [";
+        if (n.parent) {
+            os << n.parent->pos;
+        }
+        else {
+            os << "NULL";
+        }
+        os << "]";
+        return os;
     }
 };
 

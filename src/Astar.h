@@ -5,18 +5,19 @@
 
 class Astar {
 public:
-    Astar(const std::string& filename, Vec2 dim);
+    Astar(const std::string& filename, Vec2 dim, Vec2 start, Vec2 end);
     void Init();
     void Print();
+    void Show();
 
     void FindPath();
+    void PrintPath();
+private:
+    void fillNeighbors();
 private:
     std::string _filename;
-    Vec2 _dim;
+    Vec2 _dim, _start, _end;
     std::vector<std::vector<Node>> _grid;
-    // std::vector<Node*> open;
-    // std::vector<Node*> closed;
-    // std::vector<Node*> path;
-    // Node* start;
-    // Node* end;
+    Node* _startNode;
+    Node* _endNode;
 };
