@@ -23,6 +23,8 @@ Z,Z,Z,Z,3,Z,Z,Z,Z,Z,
 ```
 To convert pdf to csv you can for example use any online converter.
 
+You can turn off color print with `USE_COLOR` macro.
+
 This project uses CMake as build system. To generate the Makefile or solution follow for example these steps:
 ```
 mkdir build

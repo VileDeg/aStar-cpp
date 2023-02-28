@@ -78,7 +78,6 @@ void Astar::Init() {
         if (ic != _dim.y) {
             throw std::runtime_error("Invalid dimensions");
         }
-
         
         ++ir;
     }
