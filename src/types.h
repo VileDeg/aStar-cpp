@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <fstream>
 #include <array>
@@ -10,12 +11,16 @@
 struct Vec2 {
     std::size_t x, y;
 
-    Vec2() = default;
+    Vec2() : x(0), y(0) {}
     Vec2(const Vec2& v) : x(v.x), y(v.y) {}
     Vec2(size_t xv, size_t yv) : x(xv), y(yv) {}
 
     float distance(const Vec2& v) {
-        return std::sqrt(std::pow(x - v.x, 2) + std::pow(y - v.y, 2));
+        //Calculate sqrt but avoid overflow
+        size_t dx = x > v.x ? x - v.x : v.x - x;
+        size_t dy = y > v.y ? y - v.y : v.y - y;
+
+        return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
     }
 
     void fromStr(const std::string& str) {
@@ -39,6 +44,9 @@ struct Vec2 {
     }
 };
 
+//Fixed precision float printing
+#define FPFL(_x, _p) std::fixed <<std::setprecision((_p)) << (_x)
+
 struct Node {
     bool walkable;
     std::size_t val;
@@ -58,7 +66,7 @@ struct Node {
 
     friend std::ostream& operator<< (std::ostream& os, const Node& n) {
 
-        os << "[" << n.pos << "], " << n.f << ", [";
+        os << "[" << n.pos << "], " << FPFL(n.f, 4) << ", [";
         if (n.parent) {
             os << n.parent->pos;
         }
@@ -67,6 +75,10 @@ struct Node {
         }
         os << "]";
         return os;
+    }
+
+    bool operator==(const Node& n) {
+        return pos == n.pos;
     }
 };
 

@@ -104,7 +104,7 @@ void Astar::Show()
             } else if (node.walkable) {
                 std::cout << node.val;
             } else {
-                color("cyan", "@", false);
+                color("cyan", "Z", false);
             }
             std::cout << " ";
         }
@@ -161,17 +161,24 @@ void Astar::FindPath() {
             std::cout << "Max iterations reached. Path not found." << std::endl;
             break;
         }
-        std::cout << "Iteration: " << iteration << std::endl;
+        std::cout << "Iteration: ";
+        color("cyan", std::to_string(iteration), false);
+        std::cout << std::endl;
         //Print open and closed lists
-        std::cout << "\tOpen: ";
+        color("green", "\tOpen: ", false);
+        //std::cout << "\tOpen: ";
         for (auto& node : open) {
-            std::cout << *node << " ";
+            std::cout << *node;
+            color("yellow", "; ", false);
         }
         std::cout << std::endl;
-        std::cout << "\tClosed: ";
+        color("red", "\tClosed: ", false);
+        //std::cout << "\tClosed: ";
         for (auto& node : closed) {
-            std::cout << *node << " ";
+            std::cout << *node;
+            color("yellow", "; ", false);
         }
+        std::cout << std::endl;
 
         //Find node with lowest F cost in open. The code:
         auto it = std::min_element(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->f < b->f; });
@@ -181,13 +188,12 @@ void Astar::FindPath() {
             break;
         }
         Node* curr = *it;
-        std::cout << "Iteration: " << iteration << " Current node: " << curr->pos << std::endl;
         //Remove curr from open
         open.erase(it);
         //Add curr to closed
         closed.push_back(curr);
         //If curr is the end node, we are done
-        if (curr == _endNode) {
+        if (*curr == *_endNode) {
             std::cout << "Path found. Iteration: " << iteration << std::endl;
             return;
         }
