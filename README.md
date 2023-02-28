@@ -1,6 +1,12 @@
 # aStar-cpp
 
-This program takes a csv-formatted file which represents the grid as input. Then the grid dimensions, start point coords and end point coords in grid. 
+This program takes as input a csv-formatted file which represents the grid, grid dimensions, start point coords and end point coords in grid. 
+```
+Usage: ./astar <input_file.csv> <R,C> <X,Y> <X,Y>
+
+        File to read the grid from, grid dimensions, start point and end point.
+        Where R - number of rows(Y), C - number of columns(X).
+```
 
 File contents should be formatted like that:
 ```
