@@ -1,1 +1,39 @@
 # aStar-cpp
+
+This program takes a csv-formatted file which represents the grid as input. Then the grid dimensions, start point coords and end point coords in grid. 
+
+File contents should be formatted like that:
+```
+8,7,7,8,9,3,9,9,9,9,
+7,8,Z,8,7,3,9,Z,9,9,
+7,7,Z,2,4,3,9,Z,9,9,
+9,8,Z,9,9,3,8,Z,9,9,
+Z,Z,Z,Z,3,Z,Z,Z,Z,Z,
+8,5,7,8,3,4,6,Z,9,7,
+8,7,5,8,3,5,2,Z,9,6,
+8,7,6,9,3,Z,Z,Z,9,8,
+8,7,6,9,3,9,9,9,9,8,
+9,9,8,9,7,3,6,7,9,9,
+```
+To convert pdf to csv you can for example use any online converter.
+
+This project uses CMake as build system. To generate the Makefile or solution follow for example these steps:
+```
+mkdir build
+cd build
+cmake ..
+```
+Then to build run:
+```
+cmake --build .
+```
+After that the executable should appear in the `build` folder and you can run it like that:
+```
+./astar ../grid.csv 10,10 6,6 3,2
+```
+
+Program is in early stage of development, functionality is very limited, bugs are very likely.
+
+Project contains copyrighted material:
+
+MIT license: `src/color.h` - https://gist.github.com/Ph0enixKM/5a0d48c440a6dd664d7ae4c807c53008
