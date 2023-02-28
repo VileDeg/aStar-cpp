@@ -33,8 +33,8 @@ struct Vec2 {
         y = std::stoul(s2);
     }
 
-    bool operator==(const Vec2& v) {
-        return x == v.x && y == v.y;
+    friend bool operator== (const Vec2& v1, const Vec2& v2) {
+        return v1.x == v2.x && v1.y == v2.y;
     }
 
     //Coords printed in reverse order!!!
@@ -65,7 +65,7 @@ struct Node {
     }
 
     friend std::ostream& operator<< (std::ostream& os, const Node& n) {
-
+        std::cout << "(";
         os << "[" << n.pos << "], " << FPFL(n.f, 4) << ", [";
         if (n.parent) {
             os << n.parent->pos;
@@ -73,7 +73,7 @@ struct Node {
         else {
             os << "NULL";
         }
-        os << "]";
+        os << "])";
         return os;
     }
 

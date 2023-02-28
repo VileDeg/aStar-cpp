@@ -5,11 +5,38 @@
 #include <array>
 #include <sstream>
 #include <algorithm>
+#include <cstring>
 
+#define USE_COLOR 1
+
+#if USE_COLOR == 1
 #include "color.h"
+#else
+void color(std::string color, std::string line, bool newLine = false) {
+    std::cout << line;
+    if (newLine) {
+        std::cout << std::endl;
+    }
+}
+#endif // USE_COLOR
+
 
 Astar::Astar(const std::string& filename, Vec2 dim, Vec2 start, Vec2 end) 
-    : _filename(filename), _dim(dim), _start(start), _end(end) {}
+    : _filename(filename), _dim(dim), _start(start), _end(end) {
+    _grid = new Node*[_dim.x];
+    memset(_grid, 0, sizeof(Node*) * _dim.x);
+    for (std::size_t i = 0; i < _dim.x; ++i) {
+        _grid[i] = new Node[_dim.y];
+        memset(_grid[i], 0, sizeof(Node) * _dim.y);
+    }
+}
+
+Astar::~Astar() {
+    for (std::size_t i = 0; i < _dim.x; ++i) {
+        delete[] _grid[i];
+    }
+    delete[] _grid;
+}
 
 void Astar::Init() {
     std::ifstream ifs(_filename);
@@ -17,26 +44,11 @@ void Astar::Init() {
         throw std::runtime_error("Error opening file: " + _filename);
     }
 
-    _grid.resize(_dim.x);
-    for (std::size_t i = 0; i < _dim.x; ++i) {
-        _grid[i].resize(_dim.y);
-    }
-
-    //_grid.reserve(_dim.x);
-    /*for (std::size_t i = 0; i < _dim.x; ++i) {
-        _grid.push_back(std::vector<Node>(_dim.y));
-    }*/
     //Read file line by line, and split each line in by comma
     std::size_t ir = 0;
     std::string line, word;
     while (std::getline(ifs, line)) {
         std::istringstream iss(line);
-        
-        //Create row
-        //_grid.push_back(std::vector<Node>());
-        //_grid.resize(_grid.size() + 1);
-        //Then take a reference to it
-        //std::vector<Node>& row = _grid[ir];
         
         std::size_t pos = 0;
         std::string token;
@@ -91,11 +103,11 @@ void Astar::Show()
         std::cout << "---";
     }
     std::cout << std::endl;
-    size_t r = 0;
-    for (auto& row : _grid) {
+    for (size_t r = 0; r < _dim.x; ++r) {
         color("yellow", std::to_string(r), false);
         std::cout << " |";
-        for (auto& node : row) {
+        for (size_t c = 0; c < _dim.y; ++c) {
+            const Node& node = _grid[r][c];
             std::cout << " ";
             if (node.pos == _start) {
                 color("green", std::to_string(node.val), false);
@@ -109,7 +121,6 @@ void Astar::Show()
             std::cout << " ";
         }
         std::cout << std::endl << "  |" << std::endl;
-        ++r;
     }
 }
 
@@ -148,7 +159,29 @@ void Astar::fillNeighbors() {
     }
 }
 
+void print_list(const std::vector<Node*>& list) {
+    std::cout << "[";
+    if (!list.empty()) {
+        for (size_t i = 0; i < list.size() - 1; ++i) {
+            Node* node = list[i];
+            if (node != nullptr) {
+                std::cout << *node;
+            }
+            else {
+                break;
+            }
+            color("yellow", ", ", false);
+        }
+        std::cout << *list.back();
+    }
+    std::cout << "]" << std::endl;
+}
+
 void Astar::FindPath() {
+    _startNode->g = 0;
+    _startNode->h = _startNode->pos.distance(_endNode->pos);
+    _startNode->f = _startNode->h + _startNode->g;
+
     std::vector<Node*> open{}, closed{};
     open.push_back(_startNode);
 
@@ -166,20 +199,10 @@ void Astar::FindPath() {
         std::cout << std::endl;
         //Print open and closed lists
         color("green", "\tOpen: ", false);
-        //std::cout << "\tOpen: ";
-        for (auto& node : open) {
-            std::cout << *node;
-            color("yellow", "; ", false);
-        }
-        std::cout << std::endl;
+        print_list(open);
         color("red", "\tClosed: ", false);
-        //std::cout << "\tClosed: ";
-        for (auto& node : closed) {
-            std::cout << *node;
-            color("yellow", "; ", false);
-        }
-        std::cout << std::endl;
-
+        print_list(closed);
+        
         //Find node with lowest F cost in open. The code:
         auto it = std::min_element(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->f < b->f; });
         if (it == open.end()) {
@@ -194,7 +217,7 @@ void Astar::FindPath() {
         closed.push_back(curr);
         //If curr is the end node, we are done
         if (*curr == *_endNode) {
-            std::cout << "Path found. Iteration: " << iteration << std::endl;
+            color("magenta", "Path found in " + std::to_string(iteration) + " iterations.", true);
             return;
         }
 
@@ -240,17 +263,20 @@ void Astar::PrintPath()
         curr = curr->parent;
     }
     std::reverse(path.begin(), path.end());
-    std::cout << "Path(start to end): " << std::endl;
-    for (auto& node : path) {
-        std::cout << "[" << node->pos << "]" << std::endl;
+    std::cout << "Path(start to end): \n\t";
+    if (!path.empty()) {
+        for (size_t i = 0; i < path.size()-1; ++i) {
+            std::cout << "[" << path[i]->pos << "], ";
+        }
+        std::cout << "[" << path.back()->pos << "]\n";
     }
 }
 
 void Astar::Print() {
     std::cout << "Dimensions: " << _dim.x << ", " << _dim.y << std::endl;
-    for (auto& row : _grid) {
-        for (auto& node : row) {
-            std::cout << node << std::endl;
+    for (size_t r = 0; r < _dim.x; ++r) {
+        for (size_t c = 0; c < _dim.x; ++c) {
+            std::cout << _grid[r][c] << std::endl;
         }
     }
 }
