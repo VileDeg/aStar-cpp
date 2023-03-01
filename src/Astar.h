@@ -23,6 +23,7 @@ private:
     std::string _filename;
     Vec2 _dim, _start, _end;
     bool _useColor;
+    std::vector<Node*> _workOrder;
     Node** _grid;
     Node* _startNode;
     Node* _endNode;

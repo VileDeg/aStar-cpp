@@ -210,6 +210,7 @@ void Astar::FindPath() {
             break;
         }
         Node* curr = *it;
+        _workOrder.push_back(curr);
         //Remove curr from open
         open.erase(it);
         //Add curr to closed
@@ -262,12 +263,30 @@ void Astar::PrintPath()
         curr = curr->parent;
     }
     std::reverse(path.begin(), path.end());
-    std::cout << "Path(start to end): \n\t";
+    color_print("yellow", "Path(start to end): ", true);
+    std::cout << "\t";
     if (!path.empty()) {
         for (size_t i = 0; i < path.size()-1; ++i) {
             std::cout << "[" << path[i]->pos << "], ";
         }
         std::cout << "[" << path.back()->pos << "]\n";
+    }
+
+    size_t size = _workOrder.size();
+    size_t ml = std::to_string(size).length();
+    
+    color_print("yellow", "Nodes work order: ", true);
+    
+    for (size_t i = 0; i < size; ++i) {
+        std::cout << "\t";
+        for (size_t j = 0; j < ml - std::to_string(i).length(); ++j) {
+            std::cout << "0";
+        }
+        std::cout << i << ": [" << _workOrder[i]->pos << "] " <<
+            _workOrder[i]->g << " " << 
+            FPFL(_workOrder[i]->h, 2) << " " << 
+            FPFL(_workOrder[i]->f, 2) << 
+            std::endl;
     }
 }
 
