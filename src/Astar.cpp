@@ -159,8 +159,8 @@ void Astar::fillNeighbors() {
     }
 }
 
-void Astar::printList(const std::vector<Node*>& list, std::string name) {
-    color_print("green", "\t" + name + ": ", false);
+void Astar::printList(const std::vector<Node*>& list) {
+    
     std::cout << "[";
     if (!list.empty()) {
         for (size_t i = 0; i < list.size() - 1; ++i) {
@@ -186,7 +186,7 @@ void Astar::FindPath() {
     std::vector<Node*> open{}, closed{};
     open.push_back(_startNode);
 
-    size_t iteration = 0;
+    size_t iteration = 1;
 
     size_t maxIterations = 1000;
     
@@ -199,8 +199,10 @@ void Astar::FindPath() {
         color_print("cyan", std::to_string(iteration), false);
         std::cout << std::endl;
         //Print open and closed lists
-        printList(open, "Open");
-        printList(closed, "Closed");
+        color_print("green", "\tOpen: ", false);
+        printList(open);
+        color_print("red", "\tClosed: ", false);
+        printList(closed);
         
         //Find node with lowest F cost in open. The code:
         auto it = std::min_element(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->f < b->f; });
@@ -234,7 +236,8 @@ void Astar::FindPath() {
             float diff = nb->val;
             float dstToNb = curr->g + diff;
             //If new path to neighbor is shorter OR neighbor is not in open
-            if (dstToNb < nb->g || std::find(open.begin(), open.end(), nb) == open.end()) {
+            bool inOpen = std::find(open.begin(), open.end(), nb) != open.end();
+            if (dstToNb < nb->g || !inOpen) {
                 //Set g to new path
                 nb->g = dstToNb;
                 //Set h to distance from neighbor to end
@@ -244,7 +247,7 @@ void Astar::FindPath() {
                 //Set parent to curr
                 nb->parent = curr;
                 //If neighbor is not in open
-                if (std::find(open.begin(), open.end(), nb) == open.end()) {
+                if (!inOpen) {
                     //Add neighbor to open
                     open.push_back(nb);
                 }

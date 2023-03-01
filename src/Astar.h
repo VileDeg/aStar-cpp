@@ -17,7 +17,7 @@ public:
 private:
     void fillNeighbors();
 
-    void printList(const std::vector<Node*>& list, std::string name);
+    void printList(const std::vector<Node*>& list);
     void color_print(std::string cl, std::string line, bool newLine = false);
 private:
     std::string _filename;
