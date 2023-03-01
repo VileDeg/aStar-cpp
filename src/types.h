@@ -85,11 +85,13 @@ struct Node {
 struct Args {
     std::string file;
     Vec2 dim, start, end;
+    bool useColor;
 
     void print() {
         std::cout << "File: " << file << std::endl;
         std::cout << "Dim: " << dim.x << ", " << dim.y << std::endl;
         std::cout << "Start: " << start.x << ", " << start.y << std::endl;
         std::cout << "End: " << end.x << ", " << end.y << std::endl;
+        std::cout << "Use color: " << useColor << std::endl;
     }
 };

@@ -2,9 +2,10 @@
 
 This program takes as input a csv-formatted file which represents the grid, grid dimensions, start point coords and end point coords in grid. 
 ```
-Usage: ./astar <input_file.csv> <R,C> <X,Y> <X,Y>
+Usage: ./astar <input_file.csv> <R,C> <X,Y> <X,Y> <use_color>
 
-        File to read the grid from, grid dimensions, start point and end point.
+        File to read the grid from, grid dimensions, start point and end point. 
+        And wether to use color print (0 or 1).
         Where R - number of rows(Y), C - number of columns(X).
 ```
 

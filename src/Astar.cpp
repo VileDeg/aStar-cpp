@@ -7,22 +7,23 @@
 #include <algorithm>
 #include <cstring>
 
-#define USE_COLOR 1
-
-#if USE_COLOR == 1
 #include "color.h"
-#else
-void color(std::string color, std::string line, bool newLine = false) {
-    std::cout << line;
-    if (newLine) {
-        std::cout << std::endl;
+
+void Astar::color_print(std::string cl, std::string line, bool newLine)
+{
+    if (_useColor) {
+        color(cl, line, newLine);
+    }
+    else {
+        std::cout << line;
+        if (newLine) {
+            std::cout << std::endl;
+        }
     }
 }
-#endif // USE_COLOR
 
-
-Astar::Astar(const std::string& filename, Vec2 dim, Vec2 start, Vec2 end) 
-    : _filename(filename), _dim(dim), _start(start), _end(end) {
+Astar::Astar(Args a)
+    : _filename(a.file), _dim(a.dim), _start(a.start), _end(a.end), _useColor(a.useColor) {
     _grid = new Node*[_dim.x];
     memset(_grid, 0, sizeof(Node*) * _dim.x);
     for (std::size_t i = 0; i < _dim.x; ++i) {
@@ -95,7 +96,7 @@ void Astar::Show()
     std::cout << "Grid: " << _dim.x << " by " << _dim.y << std::endl;
     std::cout << "   ";
     for (size_t i = 0; i < _dim.x; ++i) {
-        color("yellow", " " + std::to_string(i) + " ", false);
+        color_print("yellow", " " + std::to_string(i) + " ", false);
     }
     std::cout << "  " << std::endl << "---";
     for (size_t i = 0; i < _dim.y; ++i) {
@@ -103,19 +104,19 @@ void Astar::Show()
     }
     std::cout << std::endl;
     for (size_t r = 0; r < _dim.x; ++r) {
-        color("yellow", std::to_string(r), false);
+        color_print("yellow", std::to_string(r), false);
         std::cout << " |";
         for (size_t c = 0; c < _dim.y; ++c) {
             const Node& node = _grid[r][c];
             std::cout << " ";
             if (node.pos == _start) {
-                color("green", std::to_string(node.val), false);
+                color_print("green", std::to_string(node.val), false);
             } else if (node.pos == _end) {
-                color("red", std::to_string(node.val), false);
+                color_print("red", std::to_string(node.val), false);
             } else if (node.walkable) {
                 std::cout << node.val;
             } else {
-                color("cyan", "Z", false);
+                color_print("cyan", "Z", false);
             }
             std::cout << " ";
         }
@@ -158,7 +159,8 @@ void Astar::fillNeighbors() {
     }
 }
 
-void print_list(const std::vector<Node*>& list) {
+void Astar::printList(const std::vector<Node*>& list, std::string name) {
+    color_print("green", "\t" + name + ": ", false);
     std::cout << "[";
     if (!list.empty()) {
         for (size_t i = 0; i < list.size() - 1; ++i) {
@@ -169,7 +171,7 @@ void print_list(const std::vector<Node*>& list) {
             else {
                 break;
             }
-            color("yellow", ", ", false);
+            color_print("yellow", ", ", false);
         }
         std::cout << *list.back();
     }
@@ -194,13 +196,11 @@ void Astar::FindPath() {
             break;
         }
         std::cout << "Iteration: ";
-        color("cyan", std::to_string(iteration), false);
+        color_print("cyan", std::to_string(iteration), false);
         std::cout << std::endl;
         //Print open and closed lists
-        color("green", "\tOpen: ", false);
-        print_list(open);
-        color("red", "\tClosed: ", false);
-        print_list(closed);
+        printList(open, "Open");
+        printList(closed, "Closed");
         
         //Find node with lowest F cost in open. The code:
         auto it = std::min_element(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->f < b->f; });
@@ -216,7 +216,7 @@ void Astar::FindPath() {
         closed.push_back(curr);
         //If curr is the end node, we are done
         if (*curr == *_endNode) {
-            color("magenta", "Path found in " + std::to_string(iteration) + " iterations.", true);
+            color_print("magenta", "Path found in " + std::to_string(iteration) + " iterations.", true);
             return;
         }
 

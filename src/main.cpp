@@ -4,7 +4,7 @@
 #include "Astar.h"
 
 void parse_args(int argc, char** argv, Args* args) {
-    if (argc != 5) {
+    if (argc != 6) {
         throw std::runtime_error("Invalid number of arguments");
     }
     args->file = argv[1];
@@ -15,6 +15,7 @@ void parse_args(int argc, char** argv, Args* args) {
         std::swap(args->start.x, args->start.y);
         args->end.fromStr(argv[4]);
         std::swap(args->end.x, args->end.y);
+        args->useColor = std::stoi(argv[5]);
     } catch (const std::exception& e) {
         throw std::runtime_error("Error parsing Vec2: " + std::string(e.what()));
     }
@@ -22,8 +23,8 @@ void parse_args(int argc, char** argv, Args* args) {
 
 int main(int argc, char** argv)
 {
-    const char* usage = "Usage: ./astar <input_file.csv> <R,C> <X,Y> <X,Y>\n\n"
-        "\tFile to read the grid from, grid dimensions, start point and end point.\n"
+    const char* usage = "Usage: ./astar <input_file.csv> <R,C> <X,Y> <X,Y> <use_color>\n\n"
+        "\tFile to read the grid from, grid dimensions, start point and end point. And wether to use color print (0 or 1).\n"
         "\tWhere R - number of rows(Y), C - number of columns(X).";
 
     Args args{};
@@ -40,7 +41,7 @@ int main(int argc, char** argv)
 
     args.print();
 
-    Astar astar(args.file, args.dim, args.start, args.end);
+    Astar astar(args);
     try {
         astar.Init();
     } catch (const std::exception& e) {
