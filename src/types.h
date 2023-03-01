@@ -66,7 +66,7 @@ struct Node {
 
     friend std::ostream& operator<< (std::ostream& os, const Node& n) {
         std::cout << "(";
-        os << "[" << n.pos << "], " << FPFL(n.f, 4) << ", [";
+        os << "[" << n.pos << "], " << FPFL(n.f, 2) << ", [";
         if (n.parent) {
             os << n.parent->pos;
         }
