@@ -39,6 +39,7 @@ After that the executable should appear in the `build` folder and you can run it
 ```
 ./astar ../grid.csv 10,10 6,6 3,2
 ```
+If the required CMake version is too high for your system you can try to decrease it by setting `cmake_minimum_required (VERSION ...)` in the first line of `CMakeLists.txt`. But in this case it's not guarranteed that the build will succeed.
 
 Program is in early stage of development, functionality is very limited, bugs are very likely.
 
