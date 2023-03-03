@@ -1,6 +1,6 @@
 # aStar-cpp
 
-This program takes as input a csv-formatted file which represents the grid, grid dimensions, start point coords and end point coords in grid. 
+This program takes as input a csv-like file which represents the grid, grid dimensions, start point coords and end point coords in grid.
 ```
 Usage: ./astar <input_file.csv> <R,C> <X,Y> <X,Y> <use_color>
 
@@ -8,8 +8,9 @@ Usage: ./astar <input_file.csv> <R,C> <X,Y> <X,Y> <use_color>
         And wether to use color print (0 or 1).
         Where R - number of rows(Y), C - number of columns(X).
 ```
+To see usage just run the program with wrong agruments.
 
-File contents should be formatted like that:
+File contents must be formatted like that`(no whitespaces are allowed between cells)`:
 ```
 8,7,7,8,9,3,9,9,9,9,
 7,8,Z,8,7,3,9,Z,9,9,
@@ -23,8 +24,6 @@ Z,Z,Z,Z,3,Z,Z,Z,Z,Z,
 9,9,8,9,7,3,6,7,9,9,
 ```
 To convert pdf to csv you can for example use any online converter.
-
-You can turn off color print with `USE_COLOR` macro.
 
 This project uses CMake as build system. To generate the Makefile or solution follow for example these steps:
 ```
@@ -40,9 +39,9 @@ After that the executable should appear in the `build` folder and you can run it
 ```
 ./astar ../grid.csv 10,10 6,6 3,2 1
 ```
-If the required CMake version is too high for your system you can try to decrease it by setting `cmake_minimum_required (VERSION ...)` in the first line of `CMakeLists.txt`. But in this case it's not guarranteed that the build will succeed.
+If the required CMake version is too high for your system you can try to decrease it by changing `cmake_minimum_required (VERSION ...)` on the first line of `CMakeLists.txt`. But in this case it's not guarranteed that the build will succeed.
 
-Program is in early stage of development, functionality is very limited, bugs are very likely.
+Program functionality is very limited, bugs are likely.
 
 Project contains copyrighted material:
 
