@@ -183,8 +183,11 @@ void Astar::FindPath() {
     _startNode->h = _startNode->pos.distance(_endNode->pos);
     _startNode->f = _startNode->h + _startNode->g;
 
+    _workOrder.push_back(_startNode);
     std::vector<Node*> open{}, closed{};
     open.push_back(_startNode);
+
+
 
     size_t iteration = 1;
 
@@ -195,18 +198,23 @@ void Astar::FindPath() {
             std::cout << "Max iterations reached. Path not found." << std::endl;
             break;
         }
+        
+        //Find node with lowest F cost in open. If there are multiple nodes with the same F cost, choose the one with the lowest H cost.
+        auto it = std::min_element(open.begin(), open.end(), 
+            [](const Node* a, const Node* b) {
+                if (a->f == b->f) {
+                    return a->h < b->h;
+                } else {
+                    return a->f < b->f;
+                }
+            }
+        );
 
-        
-        
-        //Find node with lowest F cost in open. The code:
-        auto it = std::min_element(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->f < b->f; });
-        if (it == open.end()) {
-            //No path found
+        if (it == open.end()) { //No path found
             std::cout << "Open list is empty. Path not found. Iteration: " << iteration << std::endl;
             break;
         }
         Node* curr = *it;
-        _workOrder.push_back(curr);
 
         std::cout << "Iteration: ";
         color_print("cyan", std::to_string(iteration), false);
@@ -236,11 +244,13 @@ void Astar::FindPath() {
             if (!nb->walkable || std::find(closed.begin(), closed.end(), nb) != closed.end()) {
                 continue;
             }
+            
             float diff = nb->val;
             float dstToNb = curr->g + diff;
             //If new path to neighbor is shorter OR neighbor is not in open
             bool inOpen = std::find(open.begin(), open.end(), nb) != open.end();
             if (dstToNb < nb->g || !inOpen) {
+                _workOrder.push_back(nb);
                 //Set g to new path
                 nb->g = dstToNb;
                 //Set h to distance from neighbor to end
@@ -256,7 +266,6 @@ void Astar::FindPath() {
                 }
             }
         }
-        
 
         ++iteration;
     }
