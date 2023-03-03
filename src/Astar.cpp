@@ -195,6 +195,8 @@ void Astar::FindPath() {
             std::cout << "Max iterations reached. Path not found." << std::endl;
             break;
         }
+
+        
         
         //Find node with lowest F cost in open. The code:
         auto it = std::min_element(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->f < b->f; });
@@ -205,13 +207,22 @@ void Astar::FindPath() {
         }
         Node* curr = *it;
         _workOrder.push_back(curr);
+
+        std::cout << "Iteration: ";
+        color_print("cyan", std::to_string(iteration), false);
+        std::cout << std::endl;
+        color_print("green", "\tOpen: ", false);
+        printList(open);
+        color_print("red", "\tClosed: ", false);
+        printList(closed);
+
         //Remove curr from open
         open.erase(it);
         //Add curr to closed
         closed.push_back(curr);
         //If curr is the end node, we are done
         if (*curr == *_endNode) {
-            color_print("magenta", "Path found in " + std::to_string(iteration-1) + " iterations.", true);
+            color_print("magenta", "Path found in " + std::to_string(iteration) + " iterations.", true);
             return;
         }
 
@@ -245,13 +256,7 @@ void Astar::FindPath() {
                 }
             }
         }
-        std::cout << "Iteration: ";
-        color_print("cyan", std::to_string(iteration), false);
-        std::cout << std::endl;
-        color_print("green", "\tOpen: ", false);
-        printList(open);
-        color_print("red", "\tClosed: ", false);
-        printList(closed);
+        
 
         ++iteration;
     }
